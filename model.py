@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY = os.getenv("SEA_LION_API_KEY")
+API_KEY = os.getenv("sk-E2RPMeO7POhBEXfs2_HF9w")
 BASE_URL = "https://api.sea-lion.ai/v1"
 
 HEADERS = {

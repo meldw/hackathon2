@@ -1,36 +1,33 @@
+import streamlit as st
 from model import list_models, chat_with_sealion
 
-def main():
-    print("📢 Selamat datang di SEA-LION Chat CLI!")
-    print("=======================================")
+# Set judul halaman
+st.set_page_config(page_title="SEA-LION Chat", layout="centered")
+st.title("🤖 SEA-LION Chat App")
+st.write("Ketik pertanyaanmu di bawah untuk ngobrol dengan model LLM ASEAN 🇸🇬🇮🇩🇻🇳")
 
-    try:
-        models = list_models()
-        model_ids = [m["id"] for m in models.get("data", [])]
-    except Exception as e:
-        print("❌ Gagal mengambil daftar model:", e)
-        return
+# Ambil daftar model
+try:
+    models = list_models()
+    model_ids = [m["id"] for m in models.get("data", [])]
+except Exception as e:
+    st.error(f"Gagal mengambil model: {e}")
+    st.stop()
 
-    print("\n📚 Model tersedia:")
-    for i, model_id in enumerate(model_ids, start=1):
-        print(f"  {i}. {model_id}")
+# Pilihan model
+model_name = st.selectbox("Pilih model:", model_ids, index=0)
 
-    selected = input("\n👉 Pilih model (tekan Enter untuk default): ").strip()
-    model_name = selected if selected else "aisingapore/Llama-SEA-LION-v3-70B-IT"
+# Kotak input pengguna
+user_input = st.text_input("Pertanyaanmu:", placeholder="Misal: Apa itu kontrak kerja lintas negara?")
 
-    print("\n💬 Ketik pertanyaanmu. Ketik 'exit' untuk keluar.")
-    print("-----------------------------------------------")
-
-    while True:
-        prompt = input("🧑 Kamu: ").strip()
-        if prompt.lower() in ["exit", "quit"]:
-            print("👋 Sampai jumpa!")
-            break
+# Tombol kirim
+if st.button("Tanya"):
+    if user_input.strip() == "":
+        st.warning("Silakan isi pertanyaan terlebih dahulu.")
+    else:
         try:
-            response = chat_with_sealion(prompt, model=model_name, max_tokens=300)
-            print("🤖 SEA-LION:", response, "\n")
+            response = chat_with_sealion(user_input, model=model_name, max_tokens=300)
+            st.markdown("### ✉️ Jawaban:")
+            st.write(response)
         except Exception as err:
-            print("❌ Gagal mengambil jawaban:", err)
-
-if __name__ == "__main__":
-    main()
+            st.error(f"Gagal mengambil jawaban: {err}")

@@ -1,41 +1,27 @@
-import os
-import requests
-from dotenv import load_dotenv
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
-# Load variabel lingkungan dari file .env
-load_dotenv()
+# Load model & tokenizer
+tokenizer = AutoTokenizer.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT")
+model = AutoModelForCausalLM.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 
-# Ambil API Key dari environment
-API_KEY = os.getenv("sk-E2RPMeO7POhBEXfs2_HF9w")  # Ganti dengan key env-mu yang benar
+def chat_with_model(message, max_new_tokens=100):
+    """
+    Mengirim pesan ke model SEA-LION dan mengembalikan respons.
+    """
+    messages = [{"role": "user", "content": message}]
 
+    inputs = tokenizer.apply_chat_template(
+        messages,
+        add_generation_prompt=True,
+        tokenize=True,
+        return_dict=True,
+        return_tensors="pt"
+    ).to(device)
 
-# Header standar untuk API SEA-LION
-HEADERS = {
-    "Authorization": f"Bearer {API_KEY}",
-    "Content-Type": "application/json",
-    "accept": "application/json"
-}
+    outputs = model.generate(**inputs, max_new_tokens=max_new_tokens)
+    response = tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:], skip_special_tokens=True)
 
-def list_models():
-    """Mengambil daftar model SEA-LION yang tersedia"""
-    url = f"{BASE_URL}/models"
-    response = requests.get(url, headers=HEADERS)
-    response.raise_for_status()
-    return response.json()
-
-def chat_with_sealion(prompt, model="aisingapore/Llama-SEA-LION-v2-8B-IT", max_tokens=300):
-    """Mengirim prompt dan mengembalikan balasan dari model"""
-    url = f"{BASE_URL}/chat/completions"
-    payload = {
-        "model": model,
-        "max_completion_tokens": max_tokens,
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }
-    response = requests.post(url, headers=HEADERS, json=payload)
-    response.raise_for_status()
-    result = response.json()
-    
-    # Ambil konten jawaban
-    return result["choices"][0]["message"]["content"]
+    return response

@@ -1,33 +1,27 @@
+# app.py
 import streamlit as st
-from model import list_models, chat_with_sealion
+from model import generate_response
 
-# Set judul halaman
 st.set_page_config(page_title="SEA-LION Chat", layout="centered")
-st.title("🤖 SEA-LION Chat App")
-st.write("Ketik pertanyaanmu di bawah untuk ngobrol dengan model LLM ASEAN 🇸🇬🇮🇩🇻🇳")
+st.title("🦁 SEA-LION Chatbot")
 
-# Ambil daftar model
-try:
-    models = list_models()
-    model_ids = [m["id"] for m in models.get("data", [])]
-except Exception as e:
-    st.error(f"Gagal mengambil model: {e}")
-    st.stop()
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
-# Pilihan model
-model_name = st.selectbox("Pilih model:", model_ids, index=0)
+with st.form(key="chat_form", clear_on_submit=True):
+    user_input = st.text_input("You:", "")
+    submitted = st.form_submit_button("Send")
 
-# Kotak input pengguna
-user_input = st.text_input("Pertanyaanmu:", placeholder="Misal: Apa itu kontrak kerja lintas negara?")
+if submitted and user_input:
+    st.session_state.chat_history.append(("user", user_input))
+    try:
+        reply = generate_response(user_input, max_tokens=200)
+    except Exception as e:
+        reply = f"❌ Error: {e}"
+    st.session_state.chat_history.append(("bot", reply))
 
-# Tombol kirim
-if st.button("Tanya"):
-    if user_input.strip() == "":
-        st.warning("Silakan isi pertanyaan terlebih dahulu.")
+for role, msg in st.session_state.chat_history:
+    if role == "user":
+        st.markdown(f"🧑‍💻 **You:** {msg}")
     else:
-        try:
-            response = chat_with_sealion(user_input, model=model_name, max_tokens=300)
-            st.markdown("### ✉️ Jawaban:")
-            st.write(response)
-        except Exception as err:
-            st.error(f"Gagal mengambil jawaban: {err}")
+        st.markdown(f"🤖 **SEA-LION:** {msg}")

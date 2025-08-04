@@ -2,24 +2,29 @@ import os
 import requests
 from dotenv import load_dotenv
 
+# Load variabel lingkungan dari file .env
 load_dotenv()
 
-API_KEY = os.getenv("lalala")
+# Ambil API Key dari environment
+API_KEY = os.getenv("sk-E2RPMeO7POhBEXfs2_HF9w")  # Ganti dengan key env-mu yang benar
 BASE_URL = "https://api.sea-lion.ai/v1"
 
+# Header standar untuk API SEA-LION
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json",
-    "accept": "text/plain"
+    "accept": "application/json"
 }
 
 def list_models():
+    """Mengambil daftar model SEA-LION yang tersedia"""
     url = f"{BASE_URL}/models"
     response = requests.get(url, headers=HEADERS)
     response.raise_for_status()
-    return response.json()  # returns list of models
+    return response.json()
 
-def chat_with_sealion(prompt, model="aisingapore/Llama-SEA-LION-v2-8B-IT", max_tokens=10):
+def chat_with_sealion(prompt, model="aisingapore/Llama-SEA-LION-v2-8B-IT", max_tokens=300):
+    """Mengirim prompt dan mengembalikan balasan dari model"""
     url = f"{BASE_URL}/chat/completions"
     payload = {
         "model": model,
@@ -30,4 +35,7 @@ def chat_with_sealion(prompt, model="aisingapore/Llama-SEA-LION-v2-8B-IT", max_t
     }
     response = requests.post(url, headers=HEADERS, json=payload)
     response.raise_for_status()
-    return response.text.strip()
+    result = response.json()
+    
+    # Ambil konten jawaban
+    return result["choices"][0]["message"]["content"]

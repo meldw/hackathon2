@@ -1,27 +1,25 @@
+# model.py
+import os
+from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
-# Load model & tokenizer
-tokenizer = AutoTokenizer.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT")
-model = AutoModelForCausalLM.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT")
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
+load_dotenv()
 
-def chat_with_model(message, max_new_tokens=100):
-    """
-    Mengirim pesan ke model SEA-LION dan mengembalikan respons.
-    """
-    messages = [{"role": "user", "content": message}]
+token = st.secrets["HUGGINGFACE_TOKEN"]
 
+tokenizer = AutoTokenizer.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT", token=token)
+model = AutoModelForCausalLM.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT", token=token)
+
+def generate_response(prompt, max_tokens=100):
+    messages = [{"role": "user", "content": prompt}]
     inputs = tokenizer.apply_chat_template(
         messages,
         add_generation_prompt=True,
         tokenize=True,
-        return_dict=True,
         return_tensors="pt"
-    ).to(device)
+    ).to(model.device)
 
-    outputs = model.generate(**inputs, max_new_tokens=max_new_tokens)
+    outputs = model.generate(**inputs, max_new_tokens=max_tokens)
     response = tokenizer.decode(outputs[0][inputs["input_ids"].shape[-1]:], skip_special_tokens=True)
-
-    return response
+    return response.strip()

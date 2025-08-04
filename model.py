@@ -7,7 +7,7 @@ load_dotenv()
 
 # Ambil API Key dari environment
 API_KEY = os.getenv("sk-E2RPMeO7POhBEXfs2_HF9w")  # Ganti dengan key env-mu yang benar
-BASE_URL = "https://api.sea-lion.ai/v1"
+
 
 # Header standar untuk API SEA-LION
 HEADERS = {

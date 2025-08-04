@@ -1,4 +1,5 @@
 # model.py
+import streamlit as st
 import os
 from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForCausalLM

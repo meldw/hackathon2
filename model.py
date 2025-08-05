@@ -12,8 +12,8 @@ if token is None:
     raise ValueError("❌ Missing HUGGINGFACE_TOKEN in secrets!")
 
 
-tokenizer = AutoTokenizer.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT", token=token)
-model = AutoModelForCausalLM.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT", token=token)
+tokenizer = AutoTokenizer.from_pretrained("aisingapore/SEA-LION-v1-7B-IT", token=token)
+model = AutoModelForCausalLM.from_pretrained("aisingapore/SEA-LION-v1-7B-IT", token=token)
 
 def generate_response(prompt, max_tokens=100):
     messages = [{"role": "user", "content": prompt}]

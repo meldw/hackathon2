@@ -7,7 +7,10 @@ import torch
 
 load_dotenv()
 
-token = st.secrets["HUGGINGFACE_TOKEN"]
+token = st.secrets.get("HUGGINGFACE_TOKEN")
+if token is None:
+    raise ValueError("❌ Missing HUGGINGFACE_TOKEN in secrets!")
+
 
 tokenizer = AutoTokenizer.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT", token=token)
 model = AutoModelForCausalLM.from_pretrained("aisingapore/Llama-SEA-LION-v2-8B-IT", token=token)

@@ -42,7 +42,7 @@
 
 # streamlit_app.py
 import streamlit as st
-from model import generate_response
+from model1 import generate_response
 
 st.title("🤖 SEA-LION Chatbot (via Hugging Face API)")
 st.write("Model: `aisingapore/Llama-SEA-LION-v3.5-8B-R` (API mode)")

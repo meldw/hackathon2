@@ -4,7 +4,7 @@ import os
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
-HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
+HF_TOKEN = os.getenv("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")
 
 tokenizer = None
 model = None

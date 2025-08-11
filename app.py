@@ -5,15 +5,22 @@ from model import generate_response
 st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🦁")
 
 st.title("🦁 SEA-LION v3.5 Chatbot")
-st.write("Chatbot sederhana menggunakan model SEA-LION dari AI Singapore.")
+st.write("Model LLaMA SEA-LION yang dioptimalkan untuk Asia Tenggara.")
 
-# Input dari user
-user_input = st.text_area("Ketik pertanyaan atau pesan Anda:", height=100)
+if "history" not in st.session_state:
+    st.session_state.history = []
 
-if st.button("Kirim"):
-    if user_input.strip():
-        with st.spinner("Sedang memproses..."):
-            reply = generate_response(user_input)
-        st.markdown(f"**Bot:** {reply}")
-    else:
-        st.warning("Silakan masukkan teks terlebih dahulu.")
+for role, text in st.session_state.history:
+    with st.chat_message(role):
+        st.write(text)
+
+if prompt := st.chat_input("Tulis pesan Anda..."):
+    st.session_state.history.append(("user", prompt))
+    with st.chat_message("user"):
+        st.write(prompt)
+
+    with st.chat_message("assistant"):
+        with st.spinner("Sedang mengetik..."):
+            reply = generate_response(prompt)
+            st.write(reply)
+    st.session_state.history.append(("assistant", reply))

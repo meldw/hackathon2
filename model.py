@@ -1,51 +1,47 @@
-
 # model.py
-import os
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import streamlit as st
 import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
-HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
+# Ambil token dari secrets
+HF_TOKEN = st.secrets["HUGGINGFACE_TOKEN"]
 
-tokenizer = None
-model = None
+# Nama model
+MODEL_NAME = "aisingapore/Llama-SEA-LION-v3.5-8B-R"
 
+# Load tokenizer
+@st.cache_resource
+def load_tokenizer():
+    return AutoTokenizer.from_pretrained(MODEL_NAME, token=HF_TOKEN)
+
+# Load model
+@st.cache_resource
 def load_model():
-    """Load model SEA-LION sekali saja"""
-    global tokenizer, model
-    if tokenizer is not None and model is not None:
-        return  # sudah pernah load
-
-    print("🔄 Loading SEA-LION model...")
-    tokenizer = AutoTokenizer.from_pretrained(
-        "aisingapore/Llama-SEA-LION-v3.5-8B-R",
-        token=HF_TOKEN
-    )
-    model = AutoModelForCausalLM.from_pretrained(
-        "aisingapore/Llama-SEA-LION-v3.5-8B-R",
-        device_map="auto",
+    return AutoModelForCausalLM.from_pretrained(
+        MODEL_NAME,
+        token=HF_TOKEN,
         torch_dtype=torch.float16,
-        load_in_4bit=True,  # ✅ Hemat RAM
-        use_auth_token=HF_TOKEN
+        device_map="auto"
     )
-    print("✅ Model loaded!")
 
-def generate_response(prompt, max_new_tokens=200):
-    """Generate chatbot response"""
-    if tokenizer is None or model is None:
-        raise ValueError("❌ Model belum dimuat! Panggil load_model() dulu.")
+tokenizer = load_tokenizer()
+model = load_model()
 
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+def generate_response(user_input, max_new_tokens=256):
+    # Encode input
+    inputs = tokenizer(user_input, return_tensors="pt").to(model.device)
+
+    # Generate output
     outputs = model.generate(
         **inputs,
         max_new_tokens=max_new_tokens,
+        temperature=0.7,
         do_sample=True,
-        top_p=0.9,
-        temperature=0.7
+        top_p=0.9
     )
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    if response.startswith(prompt):
-        response = response[len(prompt):].strip()
-    return response.strip()
+
+    # Decode hasil
+    return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
 
 

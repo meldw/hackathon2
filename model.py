@@ -18,7 +18,7 @@ def load_modelll():
     print("🔄 Loading SEA-LION model...")
     tokenizer = AutoTokenizer.from_pretrained(
         "aisingapore/Llama-SEA-LION-v3.5-8B-R",
-        use_auth_token=HF_TOKEN
+        token=HF_TOKEN
     )
     model = AutoModelForCausalLM.from_pretrained(
         "aisingapore/Llama-SEA-LION-v3.5-8B-R",

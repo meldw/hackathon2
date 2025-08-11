@@ -1,7 +1,7 @@
 
 # streamlit_app.py
 import streamlit as st
-from model1 import load_modelll, generate_responseee
+from modell import load_modelll, generate_responseee
 
 st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🤖")
 

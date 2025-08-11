@@ -1,76 +1,51 @@
 
-# # model.py
-# import os
-# from transformers import AutoTokenizer, AutoModelForCausalLM
-# import torch
-
-# HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
-
-# tokenizer = None
-# model = None
-
-# def load_model():
-#     """Load model SEA-LION sekali saja"""
-#     global tokenizer, model
-#     if tokenizer is not None and model is not None:
-#         return  # sudah pernah load
-
-#     print("🔄 Loading SEA-LION model...")
-#     tokenizer = AutoTokenizer.from_pretrained(
-#         "aisingapore/Llama-SEA-LION-v3.5-8B-R",
-#         use_auth_token=HF_TOKEN
-#     )
-#     model = AutoModelForCausalLM.from_pretrained(
-#         "aisingapore/Llama-SEA-LION-v3.5-8B-R",
-#         device_map="auto",
-#         torch_dtype=torch.float16,
-#         load_in_4bit=True,  # ✅ Hemat RAM
-#         use_auth_token=HF_TOKEN
-#     )
-#     print("✅ Model loaded!")
-
-# def generate_response(prompt, max_new_tokens=200):
-#     """Generate chatbot response"""
-#     if tokenizer is None or model is None:
-#         raise ValueError("❌ Model belum dimuat! Panggil load_model() dulu.")
-
-#     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-#     outputs = model.generate(
-#         **inputs,
-#         max_new_tokens=max_new_tokens,
-#         do_sample=True,
-#         top_p=0.9,
-#         temperature=0.7
-#     )
-#     response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-#     if response.startswith(prompt):
-#         response = response[len(prompt):].strip()
-#     return response.strip()
-
 # model.py
 import os
-import streamlit as st
-from openai import OpenAI
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
-# Ambil token dari Streamlit secrets atau environment
-HF_TOKEN = st.secrets.get("HUGGINGFACE_TOKEN", os.getenv("HUGGINGFACE_TOKEN"))
+HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 
-if HF_TOKEN is None:
-    raise ValueError("❌ Hugging Face token belum di-set di secrets atau environment.")
+tokenizer = None
+model = None
 
-# Setup OpenAI-style client untuk Hugging Face API
-client = OpenAI(
-    base_url="https://router.huggingface.co/v1",
-    api_key=HF_TOKEN
-)
+def load_model():
+    """Load model SEA-LION sekali saja"""
+    global tokenizer, model
+    if tokenizer is not None and model is not None:
+        return  # sudah pernah load
 
-def generate_response1(user_input):
-    """Mengirim prompt ke SEA-LION API dan mengembalikan jawaban"""
-    completion = client.chat.completions.create(
-        model="aisingapore/Llama-SEA-LION-v3.5-8B-R",
-        messages=[
-            {"role": "user", "content": user_input}
-        ],
+    print("🔄 Loading SEA-LION model...")
+    tokenizer = AutoTokenizer.from_pretrained(
+        "aisingapore/Llama-SEA-LION-v3.5-8B-R",
+        use_auth_token=HF_TOKEN
     )
-    return completion.choices[0].message["content"]
+    model = AutoModelForCausalLM.from_pretrained(
+        "aisingapore/Llama-SEA-LION-v3.5-8B-R",
+        device_map="auto",
+        torch_dtype=torch.float16,
+        load_in_4bit=True,  # ✅ Hemat RAM
+        use_auth_token=HF_TOKEN
+    )
+    print("✅ Model loaded!")
+
+def generate_responseee(prompt, max_new_tokens=200):
+    """Generate chatbot response"""
+    if tokenizer is None or model is None:
+        raise ValueError("❌ Model belum dimuat! Panggil load_model() dulu.")
+
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+    outputs = model.generate(
+        **inputs,
+        max_new_tokens=max_new_tokens,
+        do_sample=True,
+        top_p=0.9,
+        temperature=0.7
+    )
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    if response.startswith(prompt):
+        response = response[len(prompt):].strip()
+    return response.strip()
+
+
 

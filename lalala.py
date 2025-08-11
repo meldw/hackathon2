@@ -11,7 +11,7 @@ st.write("Model: `aisingapore/Llama-SEA-LION-v3.5-8B-R`")
 # Load model (cached biar nggak reload tiap kali)
 @st.cache_resource
 def get_model():
-    load_model()
+    load_modelll()
 
 get_model()
 

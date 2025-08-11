@@ -9,7 +9,7 @@ HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 tokenizer = None
 model = None
 
-def load_modelll():
+def load_model():
     """Load model SEA-LION sekali saja"""
     global tokenizer, model
     if tokenizer is not None and model is not None:
@@ -29,7 +29,7 @@ def load_modelll():
     )
     print("✅ Model loaded!")
 
-def generate_responseee(prompt, max_new_tokens=200):
+def generate_response(prompt, max_new_tokens=200):
     """Generate chatbot response"""
     if tokenizer is None or model is None:
         raise ValueError("❌ Model belum dimuat! Panggil load_model() dulu.")

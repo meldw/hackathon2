@@ -1,7 +1,7 @@
 
 # streamlit_app.py
 import streamlit as st
-from model import load_modelll, generate_responseee
+from model import load_model, generate_response
 
 st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🤖")
 
@@ -11,7 +11,7 @@ st.write("Model: `aisingapore/Llama-SEA-LION-v3.5-8B-R`")
 # Load model (cached biar nggak reload tiap kali)
 @st.cache_resource
 def get_model():
-    load_modelll()
+    load_model()
 
 get_model()
 

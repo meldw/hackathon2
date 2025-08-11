@@ -64,7 +64,7 @@ client = OpenAI(
     api_key=HF_TOKEN
 )
 
-def generate_response(user_input):
+def generate_response1(user_input):
     """Mengirim prompt ke SEA-LION API dan mengembalikan jawaban"""
     completion = client.chat.completions.create(
         model="aisingapore/Llama-SEA-LION-v3.5-8B-R",

@@ -9,7 +9,7 @@ HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 tokenizer = None
 model = None
 
-def load_model():
+def load_modelll():
     """Load model SEA-LION sekali saja"""
     global tokenizer, model
     if tokenizer is not None and model is not None:

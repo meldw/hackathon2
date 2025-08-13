@@ -1,51 +1,36 @@
-# import streamlit as st
-# from model import generate_response
+from model import list_models, chat_with_sealion
 
-# st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🤖")
-# st.title("🤖 SEA-LION v3.5 Chatbot")
+def main():
+    print("📢 Selamat datang di SEA-LION Chat CLI!")
+    print("=======================================")
 
-# if "history" not in st.session_state:
-#     st.session_state.history = []
+    try:
+        models = list_models()
+        model_ids = [m["id"] for m in models.get("data", [])]
+    except Exception as e:
+        print("❌ Gagal mengambil daftar model:", e)
+        return
 
-# for role, text in st.session_state.history:
-#     with st.chat_message(role):
-#         st.write(text)
+    print("\n📚 Model tersedia:")
+    for i, model_id in enumerate(model_ids, start=1):
+        print(f"  {i}. {model_id}")
 
-# if prompt := st.chat_input("Tulis pesan..."):
-#     st.session_state.history.append(("user", prompt))
-#     with st.chat_message("assistant"):
-#         with st.spinner("Metode berpikir model sedang aktif..."):
-#             reply = generate_response(prompt)
-#             st.write(reply)
-#     st.session_state.history.append(("assistant", reply))
+    selected = input("\n👉 Pilih model (tekan Enter untuk default): ").strip()
+    model_name = selected if selected else "aisingapore/Llama-SEA-LION-v3-70B-IT"
 
-import streamlit as st
-from model import generate_response
+    print("\n💬 Ketik pertanyaanmu. Ketik 'exit' untuk keluar.")
+    print("-----------------------------------------------")
 
-st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🤖")
-st.title("🤖 SEA-LION v3.5 Chatbot")
+    while True:
+        prompt = input("🧑 Kamu: ").strip()
+        if prompt.lower() in ["exit", "quit"]:
+            print("👋 Sampai jumpa!")
+            break
+        try:
+            response = chat_with_sealion(prompt, model=model_name, max_tokens=300)
+            print("🤖 SEA-LION:", response, "\n")
+        except Exception as err:
+            print("❌ Gagal mengambil jawaban:", err)
 
-if "history" not in st.session_state:
-    st.session_state.history = []
-
-# tampilkan history lama
-for role, text in st.session_state.history:
-    with st.chat_message(role):
-        st.write(text)
-
-# input baru
-if prompt := st.chat_input("Tulis pesan..."):
-    # tampilkan pesan user
-    st.session_state.history.append(("user", prompt))
-    with st.chat_message("user"):
-        st.write(prompt)
-
-    # proses balasan
-    with st.chat_message("assistant"):
-        with st.spinner("Metode berpikir model sedang aktif..."):
-            try:
-                reply = generate_response(prompt)
-            except Exception as e:
-                reply = f"Error: {e}"
-            st.write(reply)
-    st.session_state.history.append(("assistant", reply))
+if __name__ == "__main__":
+    main()

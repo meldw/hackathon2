@@ -1,36 +1,27 @@
-from model import list_models, chat_with_sealion
+import streamlit as st
+from model import generate_response
 
-def main():
-    print("📢 Selamat datang di SEA-LION Chat CLI!")
-    print("=======================================")
+st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🤖")
+st.title("🤖 SEA-LION Chatbot")
 
-    try:
-        models = list_models()
-        model_ids = [m["id"] for m in models.get("data", [])]
-    except Exception as e:
-        print("❌ Gagal mengambil daftar model:", e)
-        return
+# Simpan riwayat chat
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-    print("\n📚 Model tersedia:")
-    for i, model_id in enumerate(model_ids, start=1):
-        print(f"  {i}. {model_id}")
+# Tampilkan riwayat chat
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
 
-    selected = input("\n👉 Pilih model (tekan Enter untuk default): ").strip()
-    model_name = selected if selected else "aisingapore/Llama-SEA-LION-v3.5-8B-R"
+# Input user
+if prompt := st.chat_input("Ketik pesan..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-    print("\n💬 Ketik pertanyaanmu. Ketik 'exit' untuk keluar.")
-    print("-----------------------------------------------")
+    with st.chat_message("assistant"):
+        with st.spinner("Menulis..."):
+            response = generate_response(prompt)
+            st.markdown(response)
 
-    while True:
-        prompt = input("🧑 Kamu: ").strip()
-        if prompt.lower() in ["exit", "quit"]:
-            print("👋 Sampai jumpa!")
-            break
-        try:
-            response = chat_with_sealion(prompt, model=model_name, max_tokens=300)
-            print("🤖 SEA-LION:", response, "\n")
-        except Exception as err:
-            print("❌ Gagal mengambil jawaban:", err)
-
-if __name__ == "__main__":
-    main()
+    st.session_state.messages.append({"role": "assistant", "content": response})

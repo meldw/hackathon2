@@ -16,7 +16,7 @@ def main():
         print(f"  {i}. {model_id}")
 
     selected = input("\n👉 Pilih model (tekan Enter untuk default): ").strip()
-    model_name = selected if selected else "aisingapore/Llama-SEA-LION-v3-70B-IT"
+    model_name = selected if selected else "aisingapore/Llama-SEA-LION-v3.5-8B-R"
 
     print("\n💬 Ketik pertanyaanmu. Ketik 'exit' untuk keluar.")
     print("-----------------------------------------------")

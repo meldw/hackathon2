@@ -14,6 +14,6 @@ pipeline = transformers.pipeline(
 )
 
 def generate_response(prompt, max_new_tokens=256):
-    messages = [{"role": "user", "content": prompt}]
-    outputs = pipeline(messages, max_new_tokens=max_new_tokens)
-    return outputs[0]["generated_text"][-1] if isinstance(outputs[0]["generated_text"], list) else outputs[0]["generated_text"]
+    
+    outputs = pipeline(prompt, max_new_tokens=max_new_tokens)
+    return outputs[0]["generated_text"]

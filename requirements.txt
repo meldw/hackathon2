@@ -1,5 +1,3 @@
-transformers
-torch
-streamlit
+requests
 python-dotenv
-
+streamlit

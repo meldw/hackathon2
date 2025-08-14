@@ -1,10 +1,6 @@
 import streamlit as st
 from model import generate_response
 
-with open("style.css") as f:
-    css_content = f.read()
-    st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
-    
 with open("index.html") as f:
     html_content = f.read()
     st.markdown(html_content, unsafe_allow_html=True)

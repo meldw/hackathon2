@@ -1,19 +1,27 @@
 import os
-import transformers
-import torch
+from openai import OpenAI
 
-HF_TOKEN = os.getenv("HF_TOKEN")
-model_id = "aisingapore/Llama-SEA-LION-v3.5-8B-R"
+# Ambil API key dari environment variable atau st.secrets
+SEA_LION_API_KEY = os.environ.get("SEALION_API_KEY")
 
-pipeline = transformers.pipeline(
-    "text-generation",
-    model=model_id,
-    use_auth_token=HF_TOKEN,  # pakai token dari environment variable
-    model_kwargs={"torch_dtype": torch.bfloat16},
-    device_map="auto",
+# Inisialisasi client OpenAI-style
+client = OpenAI(
+    api_key=SEA_LION_API_KEY,
+    base_url="https://api.sea-lion.ai/v1"
 )
 
-def generate_response(prompt, max_new_tokens=256):
-    
-    outputs = pipeline(prompt, max_new_tokens=max_new_tokens)
-    return outputs[0]["generated_text"]
+MODEL_NAME = "aisingapore/Gemma-SEA-LION-v3-9B-IT"
+
+def generate_response(prompt: str) -> str:
+    try:
+        completion = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=300
+        )
+        return completion.choices[0].message.content
+    except Exception as e:
+        return f"⚠️ API Error: {e}"

@@ -1,6 +1,12 @@
 import streamlit as st
 from model import generate_response
 
+with open("style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+with open("index.html") as f:
+    st.markdown(f.read(), unsafe_allow_html=True)
+
+
 st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🤖")
 st.title("🤖 SEA-LION Chatbot")
 

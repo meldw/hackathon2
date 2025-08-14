@@ -1,28 +1,16 @@
 import streamlit as st
 from model import generate_response
+import streamlit.components.v1 as components
 
 with open("index.html") as f:
     html_content = f.read()
     st.markdown(html_content, unsafe_allow_html=True)
 
+# --- Baca file HTML ---
+with open("index.html", "r", encoding="utf-8") as f:
+    html_code = f.read()
 
-st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🤖")
+# --- Tampilkan HTML di Streamlit ---
+components.html(html_code, height=800, scrolling=True)
 
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-if prompt := st.chat_input("Ketik pesan…"):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("assistant"):
-        with st.spinner("Generating…"):
-            try:
-                response = generate_response(prompt)
-            except Exception as e:
-                response = f"⚠️ {e}"
-            st.markdown(response)
-    st.session_state.messages.append({"role": "assistant", "content": response})

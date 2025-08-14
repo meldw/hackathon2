@@ -8,7 +8,7 @@ with open("index.html") as f:
 
 
 st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🤖")
-st.title("🤖 SEA-LION Chatbot")
+
 
 if "messages" not in st.session_state:
     st.session_state.messages = []

@@ -8,6 +8,6 @@ with open("index.html", "r", encoding="utf-8") as f:
     html_code = f.read()
 
 # --- Tampilkan HTML di Streamlit ---
-components.html(html_code, height=1200, scrolling=True)
+components.html(html_code, height=st.session_state.get("screen_height", 800), scrolling=True)
 
 

@@ -1,5 +1,11 @@
-transformers
-torch
 streamlit
-python-dotenv
+openai
+Pillow
+pytesseract
+textract
+easyocr
+torch
+pandas
+six
+numpy
 

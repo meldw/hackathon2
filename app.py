@@ -1,5 +1,6 @@
 import streamlit as st
 from model import generate_response
+import numpy as np
 from io import BytesIO
 import textract
 from PIL import Image

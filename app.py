@@ -1,5 +1,5 @@
 import streamlit as st
-from model import generate_respons
+from model import generate_response
 import streamlit.components.v1 as components
 # --- Baca file HTML ---
 with open("index.html", "r", encoding="utf-8") as f:

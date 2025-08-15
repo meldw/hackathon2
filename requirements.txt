@@ -1,2 +1,9 @@
 streamlit
 openai
+Pillow
+pytesseract
+textract
+easyocr
+torch
+pandas
+six

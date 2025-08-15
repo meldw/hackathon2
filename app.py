@@ -3,15 +3,17 @@ from services import extract_text_from_file, summarize_text_ai, detect_risk, sma
 from model import generate_response
 import streamlit.components.v1 as components
 
-with open("index3.html") as f:
-    html_content = f.read()
-    
-
 # --- Tampilkan HTML di Streamlit ---
 components.html(html_code, height=1200, scrolling=True)
 
 st.set_page_config(page_title="SEA-LION Chatbot", page_icon="🦁")
 st.title("🦁 SEA-LION Chatbot (Gemma v3-9B-IT)")
+
+with open("index3.html") as f:
+    html_content = f.read()
+
+# --- Tampilkan HTML di Streamlit ---
+components.html(html_code, height=1200, scrolling=True)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
